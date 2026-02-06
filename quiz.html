@@ -48,7 +48,7 @@
 }
 
 .popup-box h2{margin:0;color:#ff4f87;}
-.popup-box p{margin:12px 0 10px;font-size:15px;}
+.popup-box p{margin:12px 0 22px;font-size:15px;}
 
 .btn{
   padding:12px 26px;
@@ -57,15 +57,6 @@
   background:linear-gradient(135deg,#ff5fa2,#ff2e7a);
   color:white;
   font-size:15px;
-  cursor:pointer;
-}
-
-.link-fallback{
-  display:block;
-  margin-top:10px;
-  font-size:13px;
-  color:#ff4f87;
-  text-decoration:underline;
   cursor:pointer;
 }
 
@@ -111,19 +102,27 @@
   </div>
 </div>
 
-<!-- 📧 SEND MAIL -->
+<!-- 📧 SEND ANSWERS -->
 <div class="popup" id="sendPopup">
   <div class="popup-box">
     <h2>ส่งคำตอบแล้ว 💌</h2>
-    <p>กดปุ่มด้านล่างเพื่อเปิดแอปเมลส่งคำตอบให้เเฟน</p>
+    <p>กดปุ่มด้านล่างเพื่อส่งคำตอบทั้งหมด</p>
 
-    <!-- ปุ่มหลัก -->
-    <button class="btn" onclick="sendMail()">เปิดแอปเมล 💕</button>
+    <form
+      action="https://formspree.io/f/mzdapnlk"
+      method="POST"
+      onsubmit="afterSend()"
+    >
+      <!-- 🔴 ใส่อีเมลปลายทาง -->
+      <input type="hidden" name="email" value="customer@email.com">
 
-    <!-- ปุ่มสำรอง -->
-    <a id="mailFallback" class="link-fallback">
-      ถ้าไม่เด้ง กดที่นี่
-    </a>
+      <input type="hidden" name="_subject" value="คำตอบ Quiz ของเรา 💗">
+      <input type="hidden" name="answers" id="answerField">
+
+      <button class="btn" type="submit">
+        ส่งคำตอบ 💕
+      </button>
+    </form>
   </div>
 </div>
 
@@ -132,10 +131,8 @@
 </div>
 
 <script>
-const TARGET_EMAIL = "garfield11kp@email.com"; // 🔴 แก้เมลตรงนี้
-
 const quiz = [
-  {q:"เราเจอกันครั้งแรกที่ไหน?",a:["มหาลัย","งานปฐมนิเทศ","ร้านนั่งเล่น","คาเฟ่"],c:1},
+  {q:"เราเจอกันครั้งแรกที่ไหน?",a:["มหาลัย","งานปฐมนิเทศ","ร้านกาแฟ","งานเลี้ยง"],c:1},
   {q:"เราชอบกินอะไรด้วยกันที่สุด?",a:["หมูกระทะ","ชาบู","ของหวาน","ทุกอย่าง"],c:3},
   {q:"นิสัยเราที่เธอชอบมากที่สุดคืออะไร?",a:["ขี้อ้อน","ใจดี","ตลก","ทั้งหมด"],c:3},
   {q:"คำที่เหมาะกับเราที่สุด?",a:["บังเอิญ","โชคดี","ธรรมดา","พรหมลิขิต"],c:3}
@@ -175,36 +172,23 @@ function nextQuestion(){
   if(index < quiz.length){
     render();
   }else{
-    prepareMail();
+    prepareAnswers();
     sendPopup.style.display="flex";
   }
 }
 
-function prepareMail(){
-  let body = "สรุปคำตอบ Quiz ของเรา 💗\n\n";
+function prepareAnswers(){
+  let text = "";
   quiz.forEach((q,i)=>{
-    body += `ข้อ ${i+1}: ${q.q}\nคำตอบ: ${answers[i]}\n\n`;
+    text += `ข้อ ${i+1}: ${q.q}\nคำตอบ: ${answers[i]}\n\n`;
   });
-
-  const subject = encodeURIComponent("คำตอบ Quiz ของเรา 💌");
-  const content = encodeURIComponent(body);
-
-  const mailto = `mailto:${TARGET_EMAIL}?subject=${subject}&body=${content}`;
-
-  // ตั้งลิงก์สำรอง
-  document.getElementById("mailFallback").href = mailto;
-
-  // สร้าง anchor แล้วคลิก (วิธีที่ browser อนุญาตที่สุด)
-  const a = document.createElement("a");
-  a.href = mailto;
-  a.style.display = "none";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  document.getElementById("answerField").value = text;
 }
 
-function sendMail(){
-  prepareMail();
+function afterSend(){
+  setTimeout(()=>{
+    location.href="final.html";
+  },1200);
 }
 
 render();

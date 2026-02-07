@@ -102,30 +102,6 @@
   </div>
 </div>
 
-<!-- 📧 SEND ANSWERS -->
-<div class="popup" id="sendPopup">
-  <div class="popup-box">
-    <h2>ส่งคำตอบแล้ว 💌</h2>
-    <p>กดปุ่มด้านล่างเพื่อส่งคำตอบทั้งหมด</p>
-
-    <form
-      action="https://formspree.io/f/mzdapnlk"
-      method="POST"
-      onsubmit="afterSend()"
-    >
-      <!-- 🔴 ใส่อีเมลปลายทาง -->
-      <input type="hidden" name="email" value="customer@email.com">
-
-      <input type="hidden" name="_subject" value="คำตอบ Quiz ของเรา 💗">
-      <input type="hidden" name="answers" id="answerField">
-
-      <button class="btn" type="submit">
-        ส่งคำตอบ 💕
-      </button>
-    </form>
-  </div>
-</div>
-
 <div class="back-menu-btn" onclick="location.href='menu.html'">
   ← เมนู
 </div>
@@ -139,7 +115,6 @@ const quiz = [
 ];
 
 let index = 0;
-let answers = [];
 
 function render(){
   title.innerText = `รู้จักเราดีแค่ไหน 💗 (${index+1}/${quiz.length})`;
@@ -156,7 +131,6 @@ function render(){
 }
 
 function check(i){
-  answers[index] = quiz[index].a[i];
   document.getElementById(
     i===quiz[index].c ? "correctPopup" : "wrongPopup"
   ).style.display="flex";
@@ -172,23 +146,9 @@ function nextQuestion(){
   if(index < quiz.length){
     render();
   }else{
-    prepareAnswers();
-    sendPopup.style.display="flex";
+    // ✅ เล่นจบ → ไปหน้าสุดท้าย
+    location.href = "final.html";
   }
-}
-
-function prepareAnswers(){
-  let text = "";
-  quiz.forEach((q,i)=>{
-    text += `ข้อ ${i+1}: ${q.q}\nคำตอบ: ${answers[i]}\n\n`;
-  });
-  document.getElementById("answerField").value = text;
-}
-
-function afterSend(){
-  setTimeout(()=>{
-    location.href="final.html";
-  },1200);
 }
 
 render();
